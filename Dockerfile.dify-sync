@@ -1,0 +1,7 @@
+ARG BASE_IMAGE=harbor.it188.com/service/outline:2025-04-29_v1.0.0-58-g6b75d2132
+FROM ${BASE_IMAGE}
+
+# Keep the existing production image (including its /hkland/kb customizations)
+# and add only the event processor for Dify synchronization.
+COPY plugins/dify-sync/plugin.json /opt/outline/build/plugins/dify-sync/plugin.json
+COPY plugins/dify-sync/server/index.js /opt/outline/build/plugins/dify-sync/server/index.js
