@@ -58,6 +58,7 @@ import {
   urlify,
   trashPath,
 } from "~/utils/routeHelpers";
+import { client } from "~/utils/ApiClient";
 
 export const openDocument = createAction({
   name: ({ t }) => t("Open document"),
@@ -395,18 +396,64 @@ export const downloadDocumentAsPDF = createAction({
   icon: <DownloadIcon />,
   iconInContextMenu: false,
   visible: ({ activeDocumentId, stores }) =>
-    !!activeDocumentId &&
-    stores.policies.abilities(activeDocumentId).download &&
-    env.PDF_EXPORT_ENABLED,
+    !!activeDocumentId,
   perform: ({ activeDocumentId, t, stores }) => {
     if (!activeDocumentId) {
       return;
     }
-
     const id = toast.loading(`${t("Exporting")}…`);
     const document = stores.documents.get(activeDocumentId);
     return document
-      ?.download(ExportContentType.Pdf)
+      ?.download(ExportContentType.Pdf).then((res) => {
+        client.post(
+          `${(window as any).OUTLINE_EXPORT_PDF_DOMAIN}/api/outline/exportPdf/`,
+          {
+            htmlContent: res.data.htmlContent,
+            fileName: res.data.fileName,
+          },
+          {
+            download: true,
+            headers: {
+              accept: ExportContentType.Pdf,
+            },
+          }
+        );
+      })
+      .finally(() => id && toast.dismiss(id));
+  },
+});
+
+export const downloadDocumentAsWord = createAction({
+  name: ({ t }) => t("Word"),
+  analyticsName: "Download document as Word",
+  section: DocumentSection,
+  keywords: "export",
+  icon: <DownloadIcon />,
+  iconInContextMenu: false,
+  visible: ({ activeDocumentId, stores }) =>
+    !!activeDocumentId,
+  perform: ({ activeDocumentId, t, stores }) => {
+    if (!activeDocumentId) {
+      return;
+    }
+    const id = toast.loading(`${t("Exporting")}…`);
+    const document = stores.documents.get(activeDocumentId);
+    return document
+      ?.download(ExportContentType.Word).then((res) => {
+        client.post(
+          `${(window as any).OUTLINE_EXPORT_PDF_DOMAIN}/api/outline/exportWord/`,
+          {
+            htmlContent: res.data.htmlContent,
+            fileName: res.data.fileName,
+          },
+          {
+            download: true,
+            headers: {
+              accept: ExportContentType.Word,
+            },
+          }
+        );
+      })
       .finally(() => id && toast.dismiss(id));
   },
 });
@@ -440,6 +487,7 @@ export const downloadDocument = createAction({
   children: [
     downloadDocumentAsHTML,
     downloadDocumentAsPDF,
+    // downloadDocumentAsWord,
     downloadDocumentAsMarkdown,
   ],
 });

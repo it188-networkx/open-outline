@@ -43,17 +43,17 @@ const AccountMenu: React.FC = ({ children }: Props) => {
   const actions = React.useMemo(
     () => [
       openKeyboardShortcuts,
-      openDocumentation,
-      openAPIDocumentation,
+      // openDocumentation,
+      // openAPIDocumentation,
       separator(),
-      openChangelog,
-      openFeedbackUrl,
-      openBugReportUrl,
+      // openChangelog,
+      // openFeedbackUrl,
+      // openBugReportUrl,
       changeTheme,
       navigateToProfileSettings,
       navigateToAccountPreferences,
-      separator(),
-      logout,
+      // separator(),
+      // logout,
     ],
     []
   );

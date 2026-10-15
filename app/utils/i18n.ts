@@ -16,6 +16,7 @@ import Logger from "./Logger";
 export function initI18n(defaultLanguage = "en_US") {
   const lng = unicodeCLDRtoBCP47(defaultLanguage);
 
+  console.log('i18KbAPI', (window as any).KbAPI)
   void i18n
     .use(backend)
     .use(initReactI18next)
@@ -25,7 +26,8 @@ export function initI18n(defaultLanguage = "en_US") {
         // this must match the path defined in routes. It's the path that the
         // frontend UI code will hit to load missing translations.
         loadPath: (locale: string[]) =>
-          `/locales/${unicodeBCP47toCLDR(locale[0])}.json`,
+          `${(window as any).KbAPI || ''
+          }/locales/${unicodeBCP47toCLDR(locale[0])}.json`,
       },
       interpolation: {
         escapeValue: false,

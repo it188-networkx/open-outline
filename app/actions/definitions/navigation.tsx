@@ -97,7 +97,8 @@ export const navigateToProfileSettings = createAction({
   section: NavigationSection,
   iconInContextMenu: false,
   icon: <ProfileIcon />,
-  perform: () => history.push(settingsPath()),
+  // perform: () => history.push(settingsPath()),
+  perform: () => history.push(settingsPath("preferences")),
 });
 
 export const navigateToTemplateSettings = createAction({
@@ -228,7 +229,7 @@ export const rootNavigationActions = [
   navigateToDrafts,
   navigateToArchive,
   navigateToTrash,
-  downloadApp,
+  // downloadApp,
   openDocumentation,
   openAPIDocumentation,
   openFeedbackUrl,

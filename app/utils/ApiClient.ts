@@ -30,7 +30,12 @@ interface FetchOptions {
   credentials?: "omit" | "same-origin" | "include";
   headers?: Record<string, string>;
 }
-
+// 检查是否为开发环境
+const isDevelopment = process.env.NODE_ENV === 'development';
+if (isDevelopment) {
+  (window as any).KbAPI = '/mx-warehouse/kb';
+}
+console.log('apiKbAPI', (window as any).KbAPI)
 const fetchWithRetry = retry(fetch);
 
 class ApiClient {
@@ -229,4 +234,6 @@ class ApiClient {
   ) => this.fetch<T>(path, "POST", data, options);
 }
 
-export const client = new ApiClient();
+export const client = new ApiClient({
+  baseUrl: `${(window as any).KbAPI || ''}/api`,
+});

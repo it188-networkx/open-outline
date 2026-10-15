@@ -39,7 +39,7 @@ function Members() {
   const [userIds, setUserIds] = React.useState<string[]>([]);
   const can = usePolicy(team);
   const query = params.get("query") || undefined;
-  const filter = params.get("filter") || undefined;
+  const filter = params.get("filter") || 'all';
   const role = params.get("role") || undefined;
   const sort = params.get("sort") || "name";
   const direction = (params.get("direction") || "asc").toUpperCase() as
@@ -160,35 +160,16 @@ function Members() {
     <Scene
       title={t("Members")}
       icon={<UserIcon />}
-      actions={
-        <>
-          {can.inviteUser && (
-            <Action>
-              <Button
-                type="button"
-                data-on="click"
-                data-event-category="invite"
-                data-event-action="peoplePage"
-                action={inviteUser}
-                context={context}
-                icon={<PlusIcon />}
-              >
-                {t("Invite people")}…
-              </Button>
-            </Action>
-          )}
-        </>
-      }
       wide
     >
       <Heading>{t("Members")}</Heading>
-      <Text as="p" type="secondary">
+      {/* <Text as="p" type="secondary">
         <Trans>
           Everyone that has signed into {{ appName }} is listed here. It’s
           possible that there are other users who have access through{" "}
           {{ signinMethods: team.signinMethods }} but haven’t signed in yet.
         </Trans>
-      </Text>
+      </Text> */}
       <Flex gap={8}>
         <InputSearch
           short
@@ -196,10 +177,10 @@ function Members() {
           placeholder={`${t("Filter")}…`}
           onChange={handleSearch}
         />
-        <LargeUserStatusFilter
+        {/* <LargeUserStatusFilter
           activeKey={filter ?? ""}
           onSelect={handleStatusFilter}
-        />
+        /> */}
         <LargeUserRoleFilter
           activeKey={role ?? ""}
           onSelect={handleRoleFilter}

@@ -21,11 +21,18 @@ import Desktop from "./components/DesktopEventHandler";
 import LazyPolyfill from "./components/LazyPolyfills";
 import PageScroll from "./components/PageScroll";
 import Routes from "./routes";
-import Logger from "./utils/Logger";
 import { PluginManager } from "./utils/PluginManager";
 import history from "./utils/history";
 import { initSentry } from "./utils/sentry";
 
+// 检查是否为开发环境
+const isDevelopment = process.env.NODE_ENV === 'development';
+if (isDevelopment) {
+  (window as any).KbAPI = '/mx-warehouse/kb';
+  (window as any).ITSM_URL = 'http://pionapaas-all/pionapaas/api/gateway/outline_update_role';
+  (window as any).OUTLINE_EXPORT_PDF_DOMAIN = 'http://mx2.it188.com';
+}
+console.log('appindex', (window as any).KbAPI)
 // Load plugins as soon as possible
 void PluginManager.loadPlugins();
 
@@ -103,30 +110,30 @@ window.addEventListener("load", async () => {
   });
 });
 
-if ("serviceWorker" in navigator && env.ENVIRONMENT !== "development") {
-  window.addEventListener("load", () => {
-    // see: https://bugs.chromium.org/p/chromium/issues/detail?id=1097616
-    // In some rare (<0.1% of cases) this call can return `undefined`
-    const maybePromise = navigator.serviceWorker.register("/static/sw.js", {
-      scope: "/",
-    });
+// if ("serviceWorker" in navigator && env.ENVIRONMENT !== "development") {
+//   window.addEventListener("load", () => {
+//     // see: https://bugs.chromium.org/p/chromium/issues/detail?id=1097616
+//     // In some rare (<0.1% of cases) this call can return `undefined`
+//     const maybePromise = navigator.serviceWorker.register("./static/sw.js", {
+//       scope: "/",
+//     });
 
-    if (maybePromise?.then) {
-      maybePromise
-        .then((registration) => {
-          Logger.debug(
-            "lifecycle",
-            "[ServiceWorker] Registered.",
-            registration
-          );
-        })
-        .catch((registrationError) => {
-          Logger.debug(
-            "lifecycle",
-            "[ServiceWorker] Registration failed.",
-            registrationError
-          );
-        });
-    }
-  });
-}
+//     if (maybePromise?.then) {
+//       maybePromise
+//         .then((registration) => {
+//           Logger.debug(
+//             "lifecycle",
+//             "[ServiceWorker] Registered.",
+//             registration
+//           );
+//         })
+//         .catch((registrationError) => {
+//           Logger.debug(
+//             "lifecycle",
+//             "[ServiceWorker] Registration failed.",
+//             registrationError
+//           );
+//         });
+//     }
+//   });
+// }

@@ -198,12 +198,12 @@ export default function blockMenuItems(dictionary: Dictionary): MenuItem[] {
     {
       name: "separator",
     },
-    {
-      name: "code_block",
-      title: "Mermaid Diagram",
-      icon: <Img src="/images/mermaidjs.png" alt="Mermaid Diagram" />,
-      keywords: "diagram flowchart",
-      attrs: { language: "mermaidjs" },
-    },
+    // {
+    //   name: "code_block",
+    //   title: "Mermaid Diagram",
+    //   icon: <Img src="/images/mermaidjs.png" alt="Mermaid Diagram" />,
+    //   keywords: "diagram flowchart",
+    //   attrs: { language: "mermaidjs" },
+    // },
   ];
 }

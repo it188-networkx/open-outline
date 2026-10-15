@@ -105,7 +105,7 @@ function Import() {
             </Button>
           }
         />
-        <Item
+        {/* <Item
           border={false}
           image={<img src={cdnPath("/images/confluence.png")} width={28} />}
           title="Confluence"
@@ -115,7 +115,7 @@ function Import() {
               {t("Enterprise")}
             </Button>
           }
-        />
+        /> */}
       </div>
       <br />
       <PaginatedList

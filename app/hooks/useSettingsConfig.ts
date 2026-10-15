@@ -62,14 +62,14 @@ const useSettingsConfig = () => {
   const config = useComputed(() => {
     const items: ConfigItem[] = [
       // Account
-      {
-        name: t("Profile"),
-        path: settingsPath(),
-        component: Profile,
-        enabled: true,
-        group: t("Account"),
-        icon: ProfileIcon,
-      },
+      // {
+      //   name: t("Profile"),
+      //   path: settingsPath(),
+      //   component: Profile,
+      //   enabled: true,
+      //   group: t("Account"),
+      //   icon: ProfileIcon,
+      // },
       {
         name: t("Preferences"),
         path: settingsPath("preferences"),
@@ -168,44 +168,44 @@ const useSettingsConfig = () => {
         icon: ExportIcon,
       },
       // Integrations
-      {
-        name: t("Self Hosted"),
-        path: integrationSettingsPath("self-hosted"),
-        component: SelfHosted,
-        enabled: can.update && !isCloudHosted,
-        group: t("Integrations"),
-        icon: BuildingBlocksIcon,
-      },
-      {
-        name: "Zapier",
-        path: integrationSettingsPath("zapier"),
-        component: Zapier,
-        enabled: can.update && isCloudHosted,
-        group: t("Integrations"),
-        icon: ZapierIcon,
-      },
+      // {
+      //   name: t("Self Hosted"),
+      //   path: integrationSettingsPath("self-hosted"),
+      //   component: SelfHosted,
+      //   enabled: can.update && !isCloudHosted,
+      //   group: t("Integrations"),
+      //   icon: BuildingBlocksIcon,
+      // },
+      // {
+      //   name: "Zapier",
+      //   path: integrationSettingsPath("zapier"),
+      //   component: Zapier,
+      //   enabled: can.update && isCloudHosted,
+      //   group: t("Integrations"),
+      //   icon: ZapierIcon,
+      // },
     ];
 
     // Plugins
-    PluginManager.getHooks(Hook.Settings).forEach((plugin) => {
-      const group = plugin.value.group ?? "Integrations";
-      const insertIndex = plugin.value.after
-        ? items.findIndex((i) => i.name === t(plugin.value.after!)) + 1
-        : items.findIndex((i) => i.group === t(group));
-      items.splice(insertIndex, 0, {
-        name: t(plugin.name),
-        path:
-          group === "Integrations"
-            ? integrationSettingsPath(plugin.id)
-            : settingsPath(plugin.id),
-        group: t(group),
-        component: plugin.value.component,
-        enabled: plugin.value.enabled
-          ? plugin.value.enabled(team, user)
-          : can.update,
-        icon: plugin.value.icon,
-      } as ConfigItem);
-    });
+    // PluginManager.getHooks(Hook.Settings).forEach((plugin) => {
+    //   const group = plugin.value.group ?? "Integrations";
+    //   const insertIndex = plugin.value.after
+    //     ? items.findIndex((i) => i.name === t(plugin.value.after!)) + 1
+    //     : items.findIndex((i) => i.group === t(group));
+    //   items.splice(insertIndex, 0, {
+    //     name: t(plugin.name),
+    //     path:
+    //       group === "Integrations"
+    //         ? integrationSettingsPath(plugin.id)
+    //         : settingsPath(plugin.id),
+    //     group: t(group),
+    //     component: plugin.value.component,
+    //     enabled: plugin.value.enabled
+    //       ? plugin.value.enabled(team, user)
+    //       : can.update,
+    //     icon: plugin.value.icon,
+    //   } as ConfigItem);
+    // });
 
     return items;
   }, [t, can.createApiKey, can.update, can.createImport, can.createExport]);

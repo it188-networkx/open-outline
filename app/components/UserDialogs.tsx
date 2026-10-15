@@ -5,12 +5,14 @@ import User from "~/models/User";
 import ConfirmationDialog from "~/components/ConfirmationDialog";
 import Input from "~/components/Input";
 import useStores from "~/hooks/useStores";
+import { client } from "~/utils/ApiClient";
 
 type Props = {
   user: User;
   onSubmit: () => void;
 };
-
+let ITSM_URL = (window as any).ITSM_URL;
+console.log('ITSM_URL', ITSM_URL)
 export function UserChangeRoleDialog({
   user,
   role,
@@ -24,6 +26,14 @@ export function UserChangeRoleDialog({
   const handleSubmit = async () => {
     await users.updateRole(user, role);
     onSubmit();
+    if (ITSM_URL) {
+      let updateUser = users.get(user.id) as any;
+      client.post(ITSM_URL, {
+        role: updateUser.role,
+        email: updateUser.email,
+      });
+    }
+
   };
 
   let accessNote;

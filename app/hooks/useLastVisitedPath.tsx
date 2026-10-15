@@ -36,11 +36,13 @@ export function useLastVisitedPath(): [string, (path: string) => void] {
 export function setPostLoginPath(path: string) {
   const key = "postLoginRedirectPath";
 
-  if (isValidPostLoginRedirect(path)) {
-    setCookie(key, path, { expires: 1 });
+  const formatPath = path.replace((window as any).KbAPI, '').replace('//', '/')
+  if (isValidPostLoginRedirect(formatPath)) {
+    setCookie(key, formatPath, { expires: 1 });
 
     try {
-      sessionStorage.setItem(key, path);
+      console.log('setItem', formatPath)
+      sessionStorage.setItem(key, formatPath);
     } catch (e) {
       // If the session storage is full or inaccessible, we can't do anything about it.
     }
@@ -73,6 +75,7 @@ export function usePostLoginPath() {
         removeCookie(key);
         cleanup?.();
       });
+      sessionStorage.removeItem(key)
 
       if (isValidPostLoginRedirect(path)) {
         return path;

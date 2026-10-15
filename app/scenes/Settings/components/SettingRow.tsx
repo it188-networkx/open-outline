@@ -12,6 +12,7 @@ type Props = {
   name: string;
   visible?: boolean;
   border?: boolean;
+  labelStyle?: React.CSSProperties;
 };
 
 const Row = styled(Flex)<{ $border?: boolean }>`
@@ -64,6 +65,7 @@ const SettingRow: React.FC<Props> = ({
   label,
   border,
   children,
+  labelStyle,
 }: Props) => {
   if (visible === false) {
     return null;
@@ -71,7 +73,7 @@ const SettingRow: React.FC<Props> = ({
   return (
     <Row gap={32} $border={border}>
       <Column>
-        <Label as="h3">
+        <Label as="h3" style={labelStyle}>
           <label htmlFor={name}>{label}</label>
         </Label>
         {description && (

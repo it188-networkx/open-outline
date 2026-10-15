@@ -60,12 +60,13 @@ export default class DocumentsStore extends Store<Document> {
 
   importFileTypes: string[] = [
     ".md",
-    ".doc",
+    // ".doc",
     ".docx",
+    ".pdf",
     "text/markdown",
     "text/plain",
     "text/html",
-    "application/msword",
+    // "application/msword",
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   ];
 

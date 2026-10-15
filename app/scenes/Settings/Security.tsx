@@ -142,7 +142,7 @@ function Security() {
         </Trans>
       </Text>
 
-      <h2>{t("Sign In")}</h2>
+      {/* <h2>{t("Sign In")}</h2>
       {authenticationProviders.orderedData
         // filtering unconnected, until we have ability to connect from this screen
         .filter((provider) => provider.isConnected)
@@ -190,10 +190,10 @@ function Security() {
           onChange={handleChange}
           disabled={!env.EMAIL_ENABLED}
         />
-      </SettingRow>
+      </SettingRow> */}
 
       <h2>{t("Access")}</h2>
-      <SettingRow
+      {/* <SettingRow
         label={t("Allow users to send invites")}
         name={TeamPreference.MembersCanInvite}
         description={t("Allow editors to invite other people to the workspace")}
@@ -203,8 +203,8 @@ function Security() {
           checked={team.getPreference(TeamPreference.MembersCanInvite)}
           onChange={handlePreferenceChange}
         />
-      </SettingRow>
-      {isCloudHosted && (
+      </SettingRow> */}
+      {/* {isCloudHosted && (
         <SettingRow
           label={t("Require invites")}
           name="inviteRequired"
@@ -218,11 +218,11 @@ function Security() {
             onChange={handleInviteRequiredChange}
           />
         </SettingRow>
-      )}
+      )} */}
 
-      {!data.inviteRequired && (
+      {/* {!data.inviteRequired && (
         <DomainManagement onSuccess={showSuccessMessage} />
-      )}
+      )} */}
       {!data.inviteRequired && (
         <SettingRow
           label={t("Default role")}
@@ -275,7 +275,7 @@ function Security() {
           onChange={handlePreferenceChange}
         />
       </SettingRow>
-      <SettingRow
+      {/* <SettingRow
         label={t("Users can delete account")}
         name={TeamPreference.MembersCanDeleteAccount}
         description={t(
@@ -287,7 +287,7 @@ function Security() {
           checked={team.getPreference(TeamPreference.MembersCanDeleteAccount)}
           onChange={handlePreferenceChange}
         />
-      </SettingRow>
+      </SettingRow> */}
       <SettingRow
         label={t("Rich service embeds")}
         name="documentEmbeds"

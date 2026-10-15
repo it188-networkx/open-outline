@@ -26,7 +26,7 @@ export default () =>
   defineConfig({
     root: "./",
     publicDir: "./server/static",
-    base: (environment.CDN_URL ?? "") + "/static/",
+    base: (environment.CDN_URL ?? "/kb") + "/static/",
     server: {
       port: 3001,
       host: true,
@@ -34,9 +34,9 @@ export default () =>
       fs:
         environment.NODE_ENV === "development"
           ? {
-              // Allow serving files from one level up to the project root
-              allow: [".."],
-            }
+            // Allow serving files from one level up to the project root
+            allow: [".."],
+          }
           : { strict: true },
     },
     plugins: [
@@ -74,6 +74,10 @@ export default () =>
         targets: [
           {
             src: "./public/images",
+            dest: "./",
+          },
+          {
+            src: "./public/config",
             dest: "./",
           },
         ],

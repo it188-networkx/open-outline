@@ -141,7 +141,8 @@ function AppSidebar() {
                   <TrashLink />
                 </>
               )}
-              <SidebarAction action={inviteUser} />
+              {/* 邀请其他人 */}
+              {/* <SidebarAction action={inviteUser} /> */}
             </Section>
           </Scrollable>
         </DndProvider>

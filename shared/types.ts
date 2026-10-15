@@ -27,6 +27,7 @@ export enum ExportContentType {
   Markdown = "text/markdown",
   Html = "text/html",
   Pdf = "application/pdf",
+  Word = "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 }
 
 export enum FileOperationFormat {
@@ -123,14 +124,14 @@ export enum DocumentPermission {
 
 export type IntegrationSettings<T> = T extends IntegrationType.Embed
   ? {
-      url: string;
-      github?: {
-        installation: {
-          id: number;
-          account: { id: number; name: string; avatarUrl: string };
-        };
+    url: string;
+    github?: {
+      installation: {
+        id: number;
+        account: { id: number; name: string; avatarUrl: string };
       };
-    }
+    };
+  }
   : T extends IntegrationType.Analytics
   ? { measurementId: string; instanceUrl?: string; scriptName?: string }
   : T extends IntegrationType.Post
@@ -138,20 +139,20 @@ export type IntegrationSettings<T> = T extends IntegrationType.Embed
   : T extends IntegrationType.Command
   ? { serviceTeamId: string }
   :
-      | { url: string }
-      | {
-          github?: {
-            installation: {
-              id: number;
-              account: { id?: number; name: string; avatarUrl?: string };
-            };
-          };
-        }
-      | { url: string; channel: string; channelId: string }
-      | { serviceTeamId: string }
-      | { measurementId: string }
-      | { slack: { serviceTeamId: string; serviceUserId: string } }
-      | undefined;
+  | { url: string }
+  | {
+    github?: {
+      installation: {
+        id: number;
+        account: { id?: number; name: string; avatarUrl?: string };
+      };
+    };
+  }
+  | { url: string; channel: string; channelId: string }
+  | { serviceTeamId: string }
+  | { measurementId: string }
+  | { slack: { serviceTeamId: string; serviceUserId: string } }
+  | undefined;
 
 export enum UserPreference {
   /** Whether reopening the app should redirect to the last viewed document. */
@@ -282,10 +283,10 @@ export enum NotificationChannelType {
 
 export type NotificationSettings = {
   [event in NotificationEventType]?:
-    | {
-        [type in NotificationChannelType]?: boolean;
-      }
-    | boolean;
+  | {
+    [type in NotificationChannelType]?: boolean;
+  }
+  | boolean;
 };
 
 export const NotificationEventDefaults = {

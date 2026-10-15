@@ -20,7 +20,7 @@ export const TeamPreferenceDefaults: TeamPreferences = {
   [TeamPreference.ViewersCanExport]: true,
   [TeamPreference.MembersCanInvite]: false,
   [TeamPreference.MembersCanCreateApiKey]: true,
-  [TeamPreference.MembersCanDeleteAccount]: true,
+  [TeamPreference.MembersCanDeleteAccount]: false,
   [TeamPreference.PublicBranding]: false,
   [TeamPreference.Commenting]: true,
   [TeamPreference.CustomTheme]: undefined,

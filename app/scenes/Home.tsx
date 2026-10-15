@@ -35,6 +35,7 @@ function Home() {
   const can = usePolicy(team);
 
   const postLoginPath = spendPostLoginPath();
+  console.log('postLoginPath', postLoginPath)
   if (postLoginPath) {
     return <Redirect to={postLoginPath} />;
   }

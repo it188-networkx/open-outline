@@ -140,11 +140,11 @@ function SuggestionsMenu<T extends MenuItem>(props: Props<T>) {
       const offsetParent = ref?.offsetParent
         ? ref.offsetParent.getBoundingClientRect()
         : ({
-            width: 0,
-            height: 0,
-            top: 0,
-            left: 0,
-          } as DOMRect);
+          width: 0,
+          height: 0,
+          top: 0,
+          left: 0,
+        } as DOMRect);
 
       let leftPos = Math.min(
         left - offsetParent.left,
@@ -194,8 +194,8 @@ function SuggestionsMenu<T extends MenuItem>(props: Props<T>) {
         Math.max(
           0,
           state.selection.from -
-            (props.search ?? "").length -
-            (trimTrigger ? props.trigger.length : 0)
+          (props.search ?? "").length -
+          (trimTrigger ? props.trigger.length : 0)
         ),
         state.selection.to
       )
@@ -388,25 +388,25 @@ function SuggestionsMenu<T extends MenuItem>(props: Props<T>) {
     let items: (EmbedDescriptor | MenuItem)[] = [...props.items];
     const embedItems: EmbedDescriptor[] = [];
 
-    for (const embed of embeds) {
-      if (embed.title && embed.visible !== false) {
-        embedItems.push(
-          new EmbedDescriptor({
-            ...embed,
-            name: "embed",
-          })
-        );
-      }
-    }
+    // for (const embed of embeds) {
+    //   if (embed.title && embed.visible !== false) {
+    //     embedItems.push(
+    //       new EmbedDescriptor({
+    //         ...embed,
+    //         name: "embed",
+    //       })
+    //     );
+    //   }
+    // }
 
-    if (embedItems.length) {
-      items = items.concat(
-        {
-          name: "separator",
-        },
-        embedItems
-      );
-    }
+    // if (embedItems.length) {
+    //   items = items.concat(
+    //     {
+    //       name: "separator",
+    //     },
+    //     embedItems
+    //   );
+    // }
 
     const searchInput = search.toLowerCase();
     const filtered = items.filter((item) => {
@@ -569,8 +569,8 @@ function SuggestionsMenu<T extends MenuItem>(props: Props<T>) {
                     "placeholder" in insertItem
                       ? insertItem.placeholder
                       : insertItem.title
-                      ? dictionary.pasteLinkWithTitle(insertItem.title)
-                      : dictionary.pasteLink
+                        ? dictionary.pasteLinkWithTitle(insertItem.title)
+                        : dictionary.pasteLink
                   }
                   onKeyDown={handleLinkInputKeydown}
                   onPaste={handleLinkInputPaste}
@@ -687,7 +687,7 @@ const Empty = styled.div`
   padding: 0 16px;
 `;
 
-export const Wrapper = styled(Scrollable)<{
+export const Wrapper = styled(Scrollable) <{
   active: boolean;
   top?: number;
   bottom?: number;

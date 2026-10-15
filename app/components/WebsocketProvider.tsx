@@ -72,8 +72,9 @@ class WebsocketProvider extends React.Component<Props> {
   };
 
   createConnection = () => {
+    console.log('socketKbAPI', (window as any).KbAPI)
     this.socket = io(window.location.origin, {
-      path: "/realtime",
+      path: `${(window as any).KbAPI || ''}/realtime`,
       transports: ["websocket"],
       reconnectionDelay: 1000,
       reconnectionDelayMax: 30000,

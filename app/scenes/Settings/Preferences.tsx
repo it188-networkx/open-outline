@@ -28,14 +28,14 @@ function Preferences() {
 
   const handlePreferenceChange =
     (inverted = false) =>
-    async (ev: React.ChangeEvent<HTMLInputElement>) => {
-      user.setPreference(
-        ev.target.name as UserPreference,
-        inverted ? !ev.target.checked : ev.target.checked
-      );
-      await user.save();
-      toast.success(t("Preferences saved"));
-    };
+      async (ev: React.ChangeEvent<HTMLInputElement>) => {
+        user.setPreference(
+          ev.target.name as UserPreference,
+          inverted ? !ev.target.checked : ev.target.checked
+        );
+        await user.save();
+        toast.success(t("Preferences saved"));
+      };
 
   const handleLanguageChange = async (language: string) => {
     await user.save({ language });
@@ -57,25 +57,28 @@ function Preferences() {
       </Text>
 
       <Heading as="h2">{t("Display")}</Heading>
-      <SettingRow
+      {/* <SettingRow
         label={t("Language")}
         name="language"
-        description={
-          <>
-            <Trans>
-              Choose the interface language. Community translations are accepted
-              though our{" "}
-              <a
-                href="https://translate.getoutline.com"
-                target="_blank"
-                rel="noreferrer"
-              >
-                translation portal
-              </a>
-              .
-            </Trans>
-          </>
-        }
+        labelStyle={{
+          marginTop: 6,
+        }}
+        // description={
+        //   <>
+        //     <Trans>
+        //       Choose the interface language. Community translations are accepted
+        //       though our{" "}
+        //       <a
+        //         href="https://translate.getoutline.com"
+        //         target="_blank"
+        //         rel="noreferrer"
+        //       >
+        //         translation portal
+        //       </a>
+        //       .
+        //     </Trans>
+        //   </>
+        // }
       >
         <InputSelect
           id="language"
@@ -84,7 +87,7 @@ function Preferences() {
           onChange={handleLanguageChange}
           ariaLabel={t("Language")}
         />
-      </SettingRow>
+      </SettingRow> */}
       <SettingRow
         name="theme"
         label={t("Appearance")}
@@ -168,7 +171,7 @@ function Preferences() {
         />
       </SettingRow>
 
-      {can.delete && (
+      {/* {can.delete && (
         <>
           <Heading as="h2">{t("Danger")}</Heading>
           <SettingRow
@@ -185,7 +188,7 @@ function Preferences() {
             </span>
           </SettingRow>
         </>
-      )}
+      )} */}
     </Scene>
   );
 }

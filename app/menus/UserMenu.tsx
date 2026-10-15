@@ -113,44 +113,44 @@ function UserMenu({ user }: Props) {
                   )
               ),
             },
-            {
-              type: "button",
-              title: `${t("Change name")}…`,
-              onClick: handleChangeName,
-              visible: can.update && user.role !== "admin",
-            },
-            {
-              type: "button",
-              title: t("Resend invite"),
-              onClick: handleResendInvite,
-              visible: can.resendInvite,
-            },
-            {
-              type: "separator",
-            },
-            {
-              type: "button",
-              title: `${t("Revoke invite")}…`,
-              dangerous: true,
-              onClick: handleRevoke,
-              visible: user.isInvited,
-            },
-            {
-              type: "button",
-              title: t("Activate user"),
-              onClick: handleActivate,
-              visible: !user.isInvited && user.isSuspended,
-            },
-            {
-              type: "button",
-              title: `${t("Suspend user")}…`,
-              onClick: handleSuspend,
-              visible: !user.isInvited && !user.isSuspended,
-            },
-            {
-              type: "separator",
-            },
-            actionToMenuItem(deleteUserActionFactory(user.id), context),
+            // {
+            //   type: "button",
+            //   title: `${t("Change name")}…`,
+            //   onClick: handleChangeName,
+            //   visible: can.update && user.role !== "admin",
+            // },
+            // {
+            //   type: "button",
+            //   title: t("Resend invite"),
+            //   onClick: handleResendInvite,
+            //   visible: can.resendInvite,
+            // },
+            // {
+            //   type: "separator",
+            // },
+            // {
+            //   type: "button",
+            //   title: `${t("Revoke invite")}…`,
+            //   dangerous: true,
+            //   onClick: handleRevoke,
+            //   visible: user.isInvited,
+            // },
+            // {
+            //   type: "button",
+            //   title: t("Activate user"),
+            //   onClick: handleActivate,
+            //   visible: !user.isInvited && user.isSuspended,
+            // },
+            // {
+            //   type: "button",
+            //   title: `${t("Suspend user")}…`,
+            //   onClick: handleSuspend,
+            //   visible: !user.isInvited && !user.isSuspended,
+            // },
+            // {
+            //   type: "separator",
+            // },
+            // actionToMenuItem(deleteUserActionFactory(user.id), context),
           ]}
         />
       </ContextMenu>

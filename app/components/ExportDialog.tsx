@@ -80,16 +80,16 @@ function ExportDialog({ collection, onSubmit }: Props) {
       ),
       value: FileOperationFormat.HTMLZip,
     },
-    {
-      title: "JSON",
-      description: t(
-        "Structured data that can be used to transfer data to another compatible {{ appName }} instance.",
-        {
-          appName,
-        }
-      ),
-      value: FileOperationFormat.JSON,
-    },
+    // {
+    //   title: "JSON",
+    //   description: t(
+    //     "Structured data that can be used to transfer data to another compatible {{ appName }} instance.",
+    //     {
+    //       appName,
+    //     }
+    //   ),
+    //   value: FileOperationFormat.JSON,
+    // },
   ];
 
   return (

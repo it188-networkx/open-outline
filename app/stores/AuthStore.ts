@@ -203,7 +203,6 @@ export default class AuthStore extends Store<Team> {
         credentials: "same-origin",
       });
       invariant(res?.data, "Auth not available");
-
       runInAction("AuthStore#refresh", () => {
         const { data } = res;
         this.addPolicies(res.policies);
@@ -242,6 +241,11 @@ export default class AuthStore extends Store<Team> {
           return;
         }
       });
+      // 同步itsm语音
+      let language = localStorage.getItem('i18nextLng');
+      if (language && this.user) {
+        this.user.save({ language: language == 'zh-CN' ? 'zh_CN' : 'en_US' });
+      }
     } catch (err) {
       if (err.error === "user_suspended") {
         this.isSuspended = true;

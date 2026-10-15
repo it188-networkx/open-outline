@@ -37,11 +37,11 @@ function PeopleTable({ canManage, ...rest }: Props) {
         },
         canManage
           ? {
-              id: "email",
-              Header: t("Email"),
-              accessor: "email",
-              Cell: observer(({ value }: { value: string }) => <>{value}</>),
-            }
+            id: "email",
+            Header: t("Email"),
+            accessor: "email",
+            Cell: observer(({ value }: { value: string }) => <>{value}</>),
+          }
           : undefined,
         {
           id: "lastActiveAt",
@@ -73,17 +73,17 @@ function PeopleTable({ canManage, ...rest }: Props) {
         },
         canManage
           ? {
-              Header: " ",
-              accessor: "id",
-              className: "actions",
-              disableSortBy: true,
-              Cell: observer(
-                ({ row, value }: { value: string; row: { original: User } }) =>
-                  currentUser.id !== value ? (
-                    <UserMenu user={row.original} />
-                  ) : null
-              ),
-            }
+            Header: " ",
+            accessor: "id",
+            className: "actions",
+            disableSortBy: true,
+            Cell: observer(
+              ({ row, value }: { value: string; row: { original: User } }) =>
+                currentUser.id !== value ? (
+                  <UserMenu user={row.original} />
+                ) : null
+            ),
+          }
           : undefined,
       ].filter((i) => i),
     [t, canManage, currentUser]

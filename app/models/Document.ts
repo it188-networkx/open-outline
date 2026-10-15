@@ -652,7 +652,7 @@ export default class Document extends ParanoidModel {
         id: this.id,
       },
       {
-        download: true,
+        download: contentType !== ExportContentType.Pdf && contentType !== ExportContentType.Word,
         headers: {
           accept: contentType,
         },

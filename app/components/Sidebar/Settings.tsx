@@ -60,31 +60,33 @@ function SettingsSidebar() {
 
       <Flex auto column>
         <Scrollable shadow>
-          {Object.keys(groupedConfig).map((header) => (
-            <Section key={header}>
-              <Header title={header}>
-                {groupedConfig[header].map((item) => (
-                  <SidebarLink
-                    key={item.path}
-                    to={item.path}
-                    active={
-                      item.path !== settingsPath()
-                        ? location.pathname.startsWith(item.path)
-                        : undefined
-                    }
-                    icon={<item.icon />}
-                    label={item.name}
-                  />
-                ))}
-              </Header>
-            </Section>
-          ))}
-          {!isCloudHosted && (
+          {Object.keys(groupedConfig).map((header) =>
+            header !== "集成" ? (
+              <Section key={header}>
+                <Header title={header}>
+                  {groupedConfig[header].map((item) => (
+                    <SidebarLink
+                      key={item.path}
+                      to={item.path}
+                      active={
+                        item.path !== settingsPath()
+                          ? location.pathname.startsWith(item.path)
+                          : undefined
+                      }
+                      icon={<item.icon />}
+                      label={item.name}
+                    />
+                  ))}
+                </Header>
+              </Section>
+            ) : null
+          )}
+          {/* {!isCloudHosted && (
             <Section>
               <Header title={t("Installation")} />
               <Version />
             </Section>
-          )}
+          )} */}
         </Scrollable>
       </Flex>
     </Sidebar>
