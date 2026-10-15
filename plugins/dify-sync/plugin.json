@@ -1,0 +1,5 @@
+{
+  "id": "dify-sync",
+  "name": "Dify document synchronization",
+  "description": "Synchronizes published Outline documents to a Dify dataset after committed changes."
+}
