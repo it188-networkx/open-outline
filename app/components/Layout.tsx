@@ -14,6 +14,7 @@ import useKeyDown from "~/hooks/useKeyDown";
 import { MenuProvider } from "~/hooks/useMenuContext";
 import useStores from "~/hooks/useStores";
 import { isModKey } from "~/utils/keyboard";
+import { useKnowledgePresentation } from "./KnowledgePresentationContext";
 
 type Props = {
   children?: React.ReactNode;
@@ -27,12 +28,13 @@ const Layout = React.forwardRef(function Layout_(
   ref: React.RefObject<HTMLDivElement>
 ) {
   const { ui } = useStores();
+  const { hideSidebar } = useKnowledgePresentation();
   const sidebarCollapsed = !sidebar || ui.sidebarIsClosed;
 
   useAutoRefresh();
 
   useKeyDown(".", (event) => {
-    if (isModKey(event)) {
+    if (isModKey(event) && !hideSidebar) {
       ui.toggleCollapsedSidebar();
     }
   });

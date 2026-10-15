@@ -60,6 +60,7 @@ type Props = Omit<EditorProps, "editorStyle"> & {
   document: Document;
   isDraft: boolean;
   multiplayer?: boolean;
+  hideArticleChrome?: boolean;
   onSave: (options: {
     done?: boolean;
     autosave?: boolean;
@@ -88,6 +89,7 @@ function DocumentEditor(props: Props, ref: React.RefObject<any>) {
     isDraft,
     shareId,
     readOnly,
+    hideArticleChrome,
     children,
     multiplayer,
     ...rest
@@ -208,7 +210,7 @@ function DocumentEditor(props: Props, ref: React.RefObject<any>) {
         onBlur={handleBlur}
         placeholder={t("Untitled")}
       />
-      {!shareId && (
+      {!shareId && !hideArticleChrome && (
         <DocumentMeta
           document={document}
           to={

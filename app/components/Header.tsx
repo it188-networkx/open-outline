@@ -15,6 +15,7 @@ import useMobile from "~/hooks/useMobile";
 import useStores from "~/hooks/useStores";
 import { draggableOnDesktop, fadeOnDesktopBackgrounded } from "~/styles";
 import Desktop from "~/utils/Desktop";
+import { useKnowledgePresentation } from "./KnowledgePresentationContext";
 
 type Props = {
   left?: React.ReactNode;
@@ -27,7 +28,8 @@ type Props = {
 function Header({ left, title, actions, hasSidebar, className }: Props) {
   const { ui } = useStores();
   const isMobile = useMobile();
-  const hasMobileSidebar = hasSidebar && isMobile;
+  const { hideSidebar } = useKnowledgePresentation();
+  const hasMobileSidebar = hasSidebar && isMobile && !hideSidebar;
 
   const passThrough = !actions && !left && !title;
 

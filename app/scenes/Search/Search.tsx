@@ -292,6 +292,8 @@ function Search(props: Props) {
                           document={result.document}
                           highlight={query}
                           context={result.context}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           showCollection
                           showTemplate
                         />

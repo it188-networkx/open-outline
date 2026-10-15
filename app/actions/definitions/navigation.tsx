@@ -25,6 +25,7 @@ import env from "~/env";
 import Desktop from "~/utils/Desktop";
 import history from "~/utils/history";
 import isCloudHosted from "~/utils/isCloudHosted";
+import { getKnowledgePresentation } from "~/utils/knowledgePresentation";
 import {
   homePath,
   searchPath,
@@ -151,7 +152,13 @@ export const toggleSidebar = createAction({
   analyticsName: "Toggle sidebar",
   keywords: "hide show navigation",
   section: NavigationSection,
-  perform: () => stores.ui.toggleCollapsedSidebar(),
+  visible: ({ location }) =>
+    !getKnowledgePresentation(location.pathname, stores).hideSidebar,
+  perform: ({ location }) => {
+    if (!getKnowledgePresentation(location.pathname, stores).hideSidebar) {
+      stores.ui.toggleCollapsedSidebar();
+    }
+  },
 });
 
 export const openFeedbackUrl = createAction({

@@ -9,6 +9,7 @@ import Revision from "~/models/Revision";
 import Error402 from "~/scenes/Error402";
 import Error404 from "~/scenes/Error404";
 import ErrorOffline from "~/scenes/ErrorOffline";
+import { useKnowledgePresentation } from "~/components/KnowledgePresentationContext";
 import useCurrentTeam from "~/hooks/useCurrentTeam";
 import useCurrentUser from "~/hooks/useCurrentUser";
 import usePolicy from "~/hooks/usePolicy";
@@ -44,6 +45,7 @@ type Children = (options: {
   revision: Revision | undefined;
   abilities: Record<string, boolean>;
   readOnly: boolean;
+  hideArticleChrome: boolean;
   onCreateLink: (title: string, nested?: boolean) => Promise<string>;
   sharedTree: NavigationNode | undefined;
 }) => React.ReactNode;
@@ -56,6 +58,7 @@ function DataLoader({ match, children }: Props) {
   const { ui, views, shares, comments, documents, revisions } = useStores();
   const team = useCurrentTeam();
   const user = useCurrentUser();
+  const { hideArticleChrome, pending } = useKnowledgePresentation();
   const [error, setError] = React.useState<Error | null>(null);
   const { revisionId, shareId, documentSlug } = match.params;
 
@@ -92,7 +95,7 @@ function DataLoader({ match, children }: Props) {
       }
     }
     void fetchDocument();
-  }, [ui, documents, shareId, documentSlug]);
+  }, [ui, documents, shareId, documentSlug, pending]);
 
   React.useEffect(() => {
     async function fetchRevision() {
@@ -204,7 +207,7 @@ function DataLoader({ match, children }: Props) {
     return <Error404 />;
   }
 
-  if (!document || (revisionId && !revision)) {
+  if (!document || pending || (revisionId && !revision)) {
     return (
       <>
         <Loading location={location} />
@@ -222,6 +225,7 @@ function DataLoader({ match, children }: Props) {
         revision,
         abilities: can,
         readOnly,
+        hideArticleChrome,
         onCreateLink,
         sharedTree,
       })}

@@ -6,6 +6,7 @@ import { TeamPreference } from "@shared/types";
 import ErrorSuspended from "~/scenes/ErrorSuspended";
 import DocumentContext from "~/components/DocumentContext";
 import type { DocumentContextValue } from "~/components/DocumentContext";
+import { KnowledgePresentationContext } from "~/components/KnowledgePresentationContext";
 import Layout from "~/components/Layout";
 import RegisterKeyDown from "~/components/RegisterKeyDown";
 import Sidebar from "~/components/Sidebar";
@@ -16,6 +17,7 @@ import useCurrentTeam from "~/hooks/useCurrentTeam";
 import usePolicy from "~/hooks/usePolicy";
 import useStores from "~/hooks/useStores";
 import history from "~/utils/history";
+import { getKnowledgePresentation } from "~/utils/knowledgePresentation";
 import lazyWithRetry from "~/utils/lazyWithRetry";
 import {
   searchPath,
@@ -44,8 +46,10 @@ type Props = {
 };
 
 const AuthenticatedLayout: React.FC = ({ children }: Props) => {
-  const { ui, auth } = useStores();
+  const stores = useStores();
+  const { ui, auth } = stores;
   const location = useLocation();
+  const presentation = getKnowledgePresentation(location.pathname, stores);
   const layoutRef = React.useRef<HTMLDivElement>(null);
   const can = usePolicy(ui.activeDocumentId);
   const canCollection = usePolicy(ui.activeCollectionId);
@@ -125,24 +129,26 @@ const AuthenticatedLayout: React.FC = ({ children }: Props) => {
   );
 
   return (
-    <DocumentContext.Provider value={documentContext}>
-      <PortalContext.Provider value={layoutRef.current}>
-        <Layout
-          title={team.name}
-          sidebar={sidebar}
-          sidebarRight={sidebarRight}
-          ref={layoutRef}
-        >
-          <RegisterKeyDown trigger="n" handler={goToNewDocument} />
-          <RegisterKeyDown trigger="t" handler={goToSearch} />
-          <RegisterKeyDown trigger="/" handler={goToSearch} />
-          {children}
-          <React.Suspense fallback={null}>
-            <CommandBar />
-          </React.Suspense>
-        </Layout>
-      </PortalContext.Provider>
-    </DocumentContext.Provider>
+    <KnowledgePresentationContext.Provider value={presentation}>
+      <DocumentContext.Provider value={documentContext}>
+        <PortalContext.Provider value={layoutRef.current}>
+          <Layout
+            title={team.name}
+            sidebar={presentation.hideSidebar ? null : sidebar}
+            sidebarRight={sidebarRight}
+            ref={layoutRef}
+          >
+            <RegisterKeyDown trigger="n" handler={goToNewDocument} />
+            <RegisterKeyDown trigger="t" handler={goToSearch} />
+            <RegisterKeyDown trigger="/" handler={goToSearch} />
+            {children}
+            <React.Suspense fallback={null}>
+              <CommandBar />
+            </React.Suspense>
+          </Layout>
+        </PortalContext.Provider>
+      </DocumentContext.Provider>
+    </KnowledgePresentationContext.Provider>
   );
 };
 

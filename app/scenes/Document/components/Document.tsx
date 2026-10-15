@@ -87,6 +87,7 @@ type Props = WithTranslation &
     document: Document;
     revision?: Revision;
     readOnly: boolean;
+    hideArticleChrome?: boolean;
     shareId?: string;
     tocPosition?: TOCPosition;
     onCreateLink?: (title: string, nested?: boolean) => Promise<string>;
@@ -414,6 +415,7 @@ class DocumentScene extends React.Component<Props> {
       document,
       revision,
       readOnly,
+      hideArticleChrome,
       abilities,
       auth,
       ui,
@@ -491,24 +493,26 @@ class DocumentScene extends React.Component<Props> {
                 )}
               />
             )}
-            <Header
-              document={document}
-              documentHasHeadings={hasHeadings}
-              revision={revision}
-              shareId={shareId}
-              isDraft={document.isDraft}
-              isEditing={!readOnly && !!user?.separateEditMode}
-              isSaving={this.isSaving}
-              isPublishing={this.isPublishing}
-              publishingIsDisabled={
-                document.isSaving || this.isPublishing || this.isEmpty
-              }
-              savingIsDisabled={document.isSaving || this.isEmpty}
-              sharedTree={this.props.sharedTree}
-              onSelectTemplate={this.replaceDocument}
-              onSave={this.onSave}
-              headings={this.headings}
-            />
+            {!hideArticleChrome && (
+              <Header
+                document={document}
+                documentHasHeadings={hasHeadings}
+                revision={revision}
+                shareId={shareId}
+                isDraft={document.isDraft}
+                isEditing={!readOnly && !!user?.separateEditMode}
+                isSaving={this.isSaving}
+                isPublishing={this.isPublishing}
+                publishingIsDisabled={
+                  document.isSaving || this.isPublishing || this.isEmpty
+                }
+                savingIsDisabled={document.isSaving || this.isEmpty}
+                sharedTree={this.props.sharedTree}
+                onSelectTemplate={this.replaceDocument}
+                onSave={this.onSave}
+                headings={this.headings}
+              />
+            )}
             <Main fullWidth={document.fullWidth} tocPosition={tocPos}>
               <React.Suspense
                 fallback={
@@ -573,6 +577,7 @@ class DocumentScene extends React.Component<Props> {
                         onPublish={this.onPublish}
                         onCancel={this.goBack}
                         readOnly={readOnly}
+                        hideArticleChrome={hideArticleChrome}
                         canUpdate={abilities.update}
                         canComment={abilities.comment}
                       >

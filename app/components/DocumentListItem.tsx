@@ -26,6 +26,8 @@ import { hover } from "~/styles";
 import { documentPath } from "~/utils/routeHelpers";
 
 type Props = {
+  target?: React.HTMLAttributeAnchorTarget;
+  rel?: string;
   document: Document;
   highlight?: string | undefined;
   context?: string | undefined;
