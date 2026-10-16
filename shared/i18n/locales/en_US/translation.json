@@ -1086,5 +1086,10 @@
   "{{ user }} updated {{ timeAgo }}": "{{ user }} updated {{ timeAgo }}",
   "You created {{ timeAgo }}": "You created {{ timeAgo }}",
   "{{ user }} created {{ timeAgo }}": "{{ user }} created {{ timeAgo }}",
-  "Uploading": "Uploading"
+  "Uploading": "Uploading",
+  "Word": "Word",
+  "Unable to change language. Please try again.": "Unable to change language. Please try again.",
+  "{{appName}} is available in your language – {{language}}, would you like to change?": "{{appName}} is available in your language – {{language}}, would you like to change?",
+  "Saving…": "Saving…",
+  "Skip navigation": "Skip navigation"
 }

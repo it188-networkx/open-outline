@@ -14,6 +14,7 @@ import Switch from "~/components/Switch";
 import Text from "~/components/Text";
 import useCurrentTeam from "~/hooks/useCurrentTeam";
 import useCurrentUser from "~/hooks/useCurrentUser";
+import { useLanguagePreference } from "~/hooks/useLanguagePreference";
 import usePolicy from "~/hooks/usePolicy";
 import useStores from "~/hooks/useStores";
 import UserDelete from "../UserDelete";
@@ -37,10 +38,7 @@ function Preferences() {
         toast.success(t("Preferences saved"));
       };
 
-  const handleLanguageChange = async (language: string) => {
-    await user.save({ language });
-    toast.success(t("Preferences saved"));
-  };
+  const { saveLanguage, isSaving } = useLanguagePreference();
 
   const showDeleteAccount = () => {
     dialogs.openModal({
@@ -57,37 +55,17 @@ function Preferences() {
       </Text>
 
       <Heading as="h2">{t("Display")}</Heading>
-      {/* <SettingRow
-        label={t("Language")}
-        name="language"
-        labelStyle={{
-          marginTop: 6,
-        }}
-        // description={
-        //   <>
-        //     <Trans>
-        //       Choose the interface language. Community translations are accepted
-        //       though our{" "}
-        //       <a
-        //         href="https://translate.getoutline.com"
-        //         target="_blank"
-        //         rel="noreferrer"
-        //       >
-        //         translation portal
-        //       </a>
-        //       .
-        //     </Trans>
-        //   </>
-        // }
-      >
+      <SettingRow label={t("Language")} name="language" labelStyle={{ marginTop: 6 }}>
         <InputSelect
           id="language"
           options={languageOptions}
           value={user.language}
-          onChange={handleLanguageChange}
+          onChange={saveLanguage}
+          disabled={isSaving || user.isSaving}
           ariaLabel={t("Language")}
         />
-      </SettingRow> */}
+        {isSaving && <Text role="status">{t("Saving…")}</Text>}
+      </SettingRow>
       <SettingRow
         name="theme"
         label={t("Appearance")}

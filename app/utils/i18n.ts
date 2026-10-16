@@ -27,7 +27,7 @@ export function initI18n(defaultLanguage = "en_US") {
         // frontend UI code will hit to load missing translations.
         loadPath: (locale: string[]) =>
           `${(window as any).KbAPI || ''
-          }/locales/${unicodeBCP47toCLDR(locale[0])}.json`,
+          }/locales/${unicodeBCP47toCLDR(locale[0])}.json?v=20261016-language-1`,
       },
       interpolation: {
         escapeValue: false,
@@ -36,10 +36,11 @@ export function initI18n(defaultLanguage = "en_US") {
         useSuspense: false,
       },
       lng,
-      fallbackLng: lng,
+      fallbackLng: { "zh-TW": ["en-US"], default: [lng] },
       supportedLngs: languages.map(unicodeCLDRtoBCP47),
       keySeparator: false,
       returnNull: false,
+      returnEmptyString: false,
     })
     .catch((err) => {
       Logger.error("Failed to initialize i18n", err);

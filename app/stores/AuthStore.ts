@@ -241,11 +241,6 @@ export default class AuthStore extends Store<Team> {
           return;
         }
       });
-      // 同步itsm语音
-      let language = localStorage.getItem('i18nextLng');
-      if (language && this.user) {
-        this.user.save({ language: language == 'zh-CN' ? 'zh_CN' : 'en_US' });
-      }
     } catch (err) {
       if (err.error === "user_suspended") {
         this.isSuspended = true;

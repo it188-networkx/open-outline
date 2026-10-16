@@ -1,4 +1,5 @@
 import { i18n } from "i18next";
+import { languages } from "@shared/i18n";
 import { unicodeCLDRtoBCP47 } from "@shared/utils/date";
 import Desktop from "./Desktop";
 
@@ -22,8 +23,20 @@ export function formatNumber(number: number, locale: string) {
  *
  * @returns The user's language in CLDR format (en_US)
  */
-export function detectLanguage() {
-  const [ln, r] = navigator.language.split("-");
+export function detectLanguage(language = navigator.language) {
+  const parts = language.replace(/_/g, "-").toLowerCase().split("-");
+  const [ln, r] = parts;
+  if (ln === "zh") {
+    if (parts.includes("hant")) {
+      return "zh_TW";
+    }
+    if (parts.includes("hans")) {
+      return "zh_CN";
+    }
+    return parts.some((part) => ["hk", "mo", "tw"].includes(part))
+      ? "zh_TW"
+      : "zh_CN";
+  }
   const region = (r || ln).toUpperCase();
   return `${ln}_${region}`;
 }
@@ -43,8 +56,31 @@ export async function changeLanguage(
   // frontend translation framework (i18next) expects en-US
   const localeBCP = locale ? unicodeCLDRtoBCP47(locale) : undefined;
 
-  if (localeBCP && instance.languages?.[0] !== localeBCP) {
+  if (locale && localeBCP && instance.languages?.[0] !== localeBCP) {
+    await loadLanguage(locale, instance);
     await instance.changeLanguage(localeBCP);
     await Desktop.bridge?.setSpellCheckerLanguages(["en-US", localeBCP]);
   }
+}
+
+/** Load a supported locale before saving or changing the interface language. */
+export async function loadLanguage(locale: string, instance: i18n) {
+  if (!languages.includes(locale)) {
+    throw new Error("Unsupported language");
+  }
+  const language = unicodeCLDRtoBCP47(locale);
+  await instance.loadLanguages(language);
+  if (!instance.hasResourceBundle(language, "translation")) {
+    throw new Error("Language resources could not be loaded");
+  }
+}
+
+/** Persist the preference only after its translations have loaded successfully. */
+export async function saveLanguagePreference(
+  locale: string,
+  instance: i18n,
+  save: (language: string) => Promise<void>
+) {
+  await loadLanguage(locale, instance);
+  await save(locale);
 }

@@ -8,6 +8,7 @@ import ButtonLink from "~/components/ButtonLink";
 import Flex from "~/components/Flex";
 import env from "~/env";
 import useCurrentUser from "~/hooks/useCurrentUser";
+import { useLanguagePreference } from "~/hooks/useLanguagePreference";
 import useStores from "~/hooks/useStores";
 import { detectLanguage } from "~/utils/language";
 import { LanguageIcon } from "./Icons/LanguageIcon";
@@ -18,6 +19,7 @@ export default function LanguagePrompt() {
   const { t } = useTranslation();
   const user = useCurrentUser();
   const language = detectLanguage();
+  const { saveLanguage, isSaving } = useLanguagePreference();
 
   if (
     language === "en_US" ||
@@ -41,14 +43,18 @@ export default function LanguagePrompt() {
         <LanguageIcon />
         <span>
           <Text>
-            {appName} is available in your language – {optionLabel}, would you
-            like to change?
+            {t(
+              "{{appName}} is available in your language – {{language}}, would you like to change?",
+              { appName, language: optionLabel }
+            )}
           </Text>
           <br />
           <Link
+            disabled={isSaving}
             onClick={async () => {
-              ui.setLanguagePromptDismissed();
-              await user.save({ language });
+              if (await saveLanguage(language)) {
+                ui.setLanguagePromptDismissed();
+              }
             }}
           >
             {t("Change Language")}
