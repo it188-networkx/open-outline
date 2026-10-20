@@ -104,3 +104,16 @@ yarn db:migrate --env test
 # License
 
 Outline is [BSL 1.1 licensed](LICENSE).
+
+## Fork PR checks
+
+The required `PR checks` gate waits for dependency setup, lint, TypeScript, the
+production build, and every planned test job. App changes run app/shared tests;
+server changes run four isolated server shards, including plugin tests. Shared
+code, plugins, dependency/configuration changes and unknown paths run both sides.
+Only known root documentation changes skip the build and tests. PostgreSQL is an
+ephemeral CI service; existing test mocks isolate Redis and external providers.
+Yarn 4 install state is cached alongside node_modules. Failed, cancelled or
+unexpectedly skipped jobs prevent merging. Native GitHub auto-merge is enabled
+without executing PR code in the privileged workflow. `.actrc` supports local
+Linux execution; no publishing credentials are needed for the PR checks.

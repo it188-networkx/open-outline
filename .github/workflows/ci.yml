@@ -4,7 +4,13 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+concurrency:
+  group: pr-ci-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   NODE_ENV: test
@@ -20,6 +26,7 @@ env:
 jobs:
   setup:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v5
       - name: Enable Corepack
@@ -33,8 +40,10 @@ jobs:
         id: cache-node-modules
         uses: actions/cache@v4
         with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
+          path: |
+            node_modules
+            .yarn/install-state.gz
+          key: ${{ runner.os }}-node22-modules-v2-${{ hashFiles('yarn.lock', 'package.json', '.yarnrc.yml', 'patches/**') }}
       - name: Install dependencies
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: yarn install --immutable
@@ -42,6 +51,7 @@ jobs:
   lint:
     needs: setup
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v5
       - name: Enable Corepack
@@ -53,13 +63,16 @@ jobs:
       - name: Restore node_modules
         uses: actions/cache@v4
         with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
+          path: |
+            node_modules
+            .yarn/install-state.gz
+          key: ${{ runner.os }}-node22-modules-v2-${{ hashFiles('yarn.lock', 'package.json', '.yarnrc.yml', 'patches/**') }}
       - run: yarn lint --quiet
 
   types:
     needs: setup
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v5
       - name: Enable Corepack
@@ -71,40 +84,37 @@ jobs:
       - name: Restore node_modules
         uses: actions/cache@v4
         with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
+          path: |
+            node_modules
+            .yarn/install-state.gz
+          key: ${{ runner.os }}-node22-modules-v2-${{ hashFiles('yarn.lock', 'package.json', '.yarnrc.yml', 'patches/**') }}
       - run: yarn tsc
 
   changes:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     outputs:
-      config: ${{ steps.filter.outputs.config }}
-      server: ${{ steps.filter.outputs.server }}
-      app: ${{ steps.filter.outputs.app }}
+      run: ${{ steps.scope.outputs.run }}
+      server: ${{ steps.scope.outputs.server }}
+      app: ${{ steps.scope.outputs.app }}
     steps:
       - uses: actions/checkout@v5
-      - uses: dorny/paths-filter@v2
-        id: filter
         with:
-          filters: |
-            config:
-              - '.github/**'
-              - 'vite.config.ts'
-            server:
-              - 'server/**'
-              - 'shared/**'
-              - 'package.json'
-              - 'yarn.lock'
-            app:
-              - 'app/**'
-              - 'shared/**'
-              - 'package.json'
-              - 'yarn.lock'
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Test scope and gate policy
+        run: python3 -m unittest discover -s .github/scripts -p 'test_*.py'
+      - name: Select checks conservatively
+        id: scope
+        env:
+          CI_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before || github.sha }}
+        run: python3 .github/scripts/ci.py plan
 
   test:
     needs: [setup, changes]
-    if: ${{ needs.changes.outputs.app == 'true' || needs.changes.outputs.config == 'true' }}
+    if: ${{ needs.changes.outputs.app == 'true' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     strategy:
       matrix:
         test-group: [app, shared]
@@ -119,14 +129,17 @@ jobs:
       - name: Restore node_modules
         uses: actions/cache@v4
         with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
-      - run: yarn test:${{ matrix.test-group }}
+          path: |
+            node_modules
+            .yarn/install-state.gz
+          key: ${{ runner.os }}-node22-modules-v2-${{ hashFiles('yarn.lock', 'package.json', '.yarnrc.yml', 'patches/**') }}
+      - run: yarn test:${{ matrix.test-group }} --maxWorkers=2
 
   test-server:
     needs: [setup, changes]
-    if: ${{ needs.changes.outputs.server == 'true' || needs.changes.outputs.config == 'true' }}
+    if: ${{ needs.changes.outputs.server == 'true' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     services:
       postgres:
         image: postgres:14.2
@@ -157,18 +170,19 @@ jobs:
       - name: Restore node_modules
         uses: actions/cache@v4
         with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
+          path: |
+            node_modules
+            .yarn/install-state.gz
+          key: ${{ runner.os }}-node22-modules-v2-${{ hashFiles('yarn.lock', 'package.json', '.yarnrc.yml', 'patches/**') }}
       - run: yarn sequelize db:migrate
       - name: Run server tests
-        run: |
-          TESTFILES=$(find . -name "*.test.ts" -path "*/server/*" | sort | awk "NR % 4 == (${{ matrix.shard }} - 1)")
-          yarn test --maxWorkers=2 $TESTFILES
+        run: yarn test:server --maxWorkers=2 --shard=${{ matrix.shard }}/4
 
   bundle-size:
     needs: [setup, types, changes]
-    if: ${{ needs.changes.outputs.app == 'true' && github.repository == 'outline/outline' }}
+    if: ${{ needs.changes.outputs.run == 'true' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v5
       - name: Enable Corepack
@@ -180,14 +194,40 @@ jobs:
       - name: Restore node_modules
         uses: actions/cache@v4
         with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
+          path: |
+            node_modules
+            .yarn/install-state.gz
+          key: ${{ runner.os }}-node22-modules-v2-${{ hashFiles('yarn.lock', 'package.json', '.yarnrc.yml', 'patches/**') }}
       - name: Set environment to production
-        run: echo "NODE_ENV=production" >> $GITHUB_ENV
-      - run: yarn vite:build
+        run: echo "NODE_ENV=production" >> "$GITHUB_ENV"
+      - run: yarn build
       - name: Send bundle stats to RelativeCI
+        if: github.repository == 'outline/outline'
         uses: relative-ci/agent-action@v2
         with:
           key: ${{ secrets.RELATIVE_CI_KEY }}
           token: ${{ secrets.GITHUB_TOKEN }}
           webpackStatsFile: ./build/app/webpack-stats.json
+
+  check:
+    name: PR checks
+    needs: [setup, changes, lint, types, test, test-server, bundle-size]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require all planned checks
+        env:
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          python3 - <<'PY'
+          import json, os
+          jobs = json.loads(os.environ['RESULTS'])
+          for name in ['setup', 'changes', 'lint', 'types']:
+              assert jobs[name]['result'] == 'success', name
+          for name, scope in [('test', 'app'), ('test-server', 'server'), ('bundle-size', 'run')]:
+              planned = jobs['changes']['outputs'][scope]
+              assert planned in ('true', 'false'), planned
+              expected = 'success' if planned == 'true' else 'skipped'
+              assert jobs[name]['result'] == expected, name
+          PY
